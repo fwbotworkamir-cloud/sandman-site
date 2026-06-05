@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sandman Equity Terminal · Sky Sigma — Quantitative US equity research</title>
+<meta name="description" content="Sandman is a quantitative equity research dashboard for the S&P 500 — 8-pillar scoring engine, XGBoost + LightGBM ensemble, regime detection, walk-forward backtests, Kelly position sizing. Private beta by Sky Sigma.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%231a2b4a'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='IBM Plex Mono,monospace' font-weight='700' font-size='14' fill='%231a73e8'%3ESM%3C/text%3E%3C/svg%3E">
+<meta property="og:title" content="Sandman Equity Terminal · Sky Sigma">
+<meta property="og:description" content="Quantitative US equity research dashboard. 8-pillar scoring, ML ensemble, regime detection. Private beta.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://sandman.sky-sigma.com">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Sandman Equity Terminal",
+  "applicationCategory": "FinanceApplication",
+  "applicationSubCategory": "Quantitative Equity Research",
+  "operatingSystem": "Web",
+  "url": "https://sandman.sky-sigma.com",
+  "description": "Quantitative US equity research dashboard with 8-pillar scoring engine, ML ensemble, regime detection, and walk-forward backtests.",
+  "creator": {"@type": "Organization", "name": "Sky Sigma", "url": "https://sky-sigma.com"},
+  "isAccessibleForFree": false,
+  "offers": {"@type": "Offer", "availability": "https://schema.org/PreOrder"}
+}
+</script>
+<style>
+  :root {
+    --bg: #f0f4fa;
+    --panel: #ffffff;
+    --panel-2: #f6f9fc;
+    --border: #d8e1ec;
+    --border-2: #c4d1e2;
+    --text: #1a2b4a;
+    --muted: #4a5b78;
+    --muted-2: #7d8aa0;
+    --accent: #1a73e8;
+    --accent-soft: rgba(26,115,232,0.10);
+    --accent-dark: #1456b8;
+    --good: #15803d;
+    --good-soft: rgba(21,128,61,0.10);
+    --amber: #b45309;
+    --amber-soft: rgba(180,83,9,0.10);
+    --sans: "IBM Plex Sans", -apple-system, system-ui, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "JetBrains Mono", Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font: 14px/1.55 var(--sans); -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-dark); }
+  .wrap { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+
+  /* Top bar */
+  .sky-bar { display: flex; justify-content: space-between; align-items: center; padding: 14px 0 20px; border-bottom: 1px solid var(--border); margin-bottom: 48px; }
+  .sky-mark-block { display: flex; align-items: center; gap: 10px; }
+  .sky-mark { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 6px; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: #fff; font-weight: 700; font-size: 13px; }
+  .sky-name { font-weight: 600; font-size: 15px; }
+  .sky-name-dark { color: var(--text); }
+  .sky-name-accent { color: var(--accent); }
+  .sky-sep { color: var(--muted-2); margin: 0 4px; }
+  .sky-product { color: var(--text); font-weight: 500; font-size: 14px; }
+  .sky-bar-right { display: flex; gap: 22px; font-size: 13px; }
+  .sky-bar-right a { color: var(--muted); font-weight: 500; transition: color .15s; }
+  .sky-bar-right a:hover { color: var(--accent); }
+
+  /* Hero */
+  .hero { max-width: 760px; margin: 0 0 56px; }
+  .hero-pill { display: inline-block; background: var(--amber-soft); color: var(--amber); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; padding: 4px 10px; border-radius: 99px; margin-bottom: 18px; }
+  .hero h1 { font-size: 40px; line-height: 1.15; letter-spacing: -0.025em; font-weight: 600; color: var(--text); margin: 0 0 18px; }
+  .hero h1 .hl { color: var(--accent); }
+  .hero-sub { color: var(--muted); font-size: 16px; line-height: 1.55; margin: 0 0 28px; max-width: 660px; }
+  .hero-sub strong { color: var(--text); font-weight: 600; }
+  .hero-cta { display: inline-flex; align-items: center; gap: 10px; background: var(--text); color: #fff; padding: 12px 22px; border-radius: 7px; font-weight: 500; font-size: 14px; transition: background .15s; }
+  .hero-cta:hover { background: var(--accent); color: #fff; }
+  .hero-cta::after { content: "→"; font-family: var(--mono); }
+  .hero-cta-sec { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); margin-left: 18px; font-size: 13px; }
+
+  /* Stat bar */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 24px 28px; margin-bottom: 64px; }
+  @media (max-width: 800px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+  .stat .lbl { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .stat .val { font-size: 22px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
+  .stat .sub { font-size: 12px; color: var(--muted-2); margin-top: 2px; }
+
+  /* Section */
+  section.block { margin-bottom: 80px; }
+  .sec-header { display: flex; justify-content: space-between; align-items: baseline; margin: 0 0 24px; }
+  .sec-title { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+  .sec-sub { color: var(--muted-2); font-size: 13px; }
+  .sec h2 { font-size: 26px; font-weight: 600; color: var(--text); letter-spacing: -0.015em; margin: 0 0 14px; }
+  .sec-intro { color: var(--muted); font-size: 15px; line-height: 1.55; max-width: 700px; margin: 0 0 28px; }
+
+  /* Pillars grid */
+  .pillars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  @media (max-width: 900px) { .pillars { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 540px) { .pillars { grid-template-columns: 1fr; } }
+  .pillar { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
+  .pillar-num { font-family: var(--mono); font-size: 11px; color: var(--accent); margin-bottom: 8px; letter-spacing: 0.04em; }
+  .pillar h3 { font-size: 14px; font-weight: 600; color: var(--text); margin: 0 0 6px; letter-spacing: -0.005em; }
+  .pillar p { font-size: 12px; color: var(--muted); margin: 0; line-height: 1.55; }
+
+  /* Stack table */
+  .stack { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .stack-row { display: grid; grid-template-columns: 200px 1fr; padding: 18px 22px; border-bottom: 1px solid var(--border); align-items: center; }
+  .stack-row:last-child { border-bottom: 0; }
+  @media (max-width: 700px) { .stack-row { grid-template-columns: 1fr; gap: 6px; } }
+  .stack-key { font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: 0.04em; text-transform: uppercase; }
+  .stack-val { color: var(--text); font-size: 14px; line-height: 1.5; }
+  .stack-val .pill { display: inline-block; background: var(--accent-soft); color: var(--accent); font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 99px; margin: 0 4px 4px 0; font-family: var(--mono); }
+
+  /* Access band */
+  .access { background: var(--text); color: #fff; border-radius: 14px; padding: 44px; display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center; }
+  @media (max-width: 800px) { .access { grid-template-columns: 1fr; padding: 32px; } }
+  .access h2 { color: #fff; font-size: 24px; font-weight: 600; letter-spacing: -0.015em; margin: 0 0 10px; }
+  .access p { color: rgba(255,255,255,0.7); font-size: 14px; line-height: 1.6; margin: 0; max-width: 540px; }
+  .access-cta { display: inline-flex; align-items: center; gap: 10px; background: var(--accent); color: #fff; padding: 14px 24px; border-radius: 7px; font-weight: 600; font-size: 14px; transition: background .15s; white-space: nowrap; }
+  .access-cta:hover { background: var(--accent-dark); color: #fff; }
+
+  /* Caveats */
+  .caveats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  @media (max-width: 800px) { .caveats { grid-template-columns: 1fr; } }
+  .caveat h3 { font-size: 14px; font-weight: 600; color: var(--text); margin: 0 0 6px; letter-spacing: -0.005em; }
+  .caveat p { color: var(--muted); font-size: 13px; margin: 0; line-height: 1.55; }
+  .caveat h3 .tag { display: inline-block; background: var(--amber-soft); color: var(--amber); font-size: 10px; font-weight: 600; letter-spacing: 0.06em; padding: 2px 7px; border-radius: 99px; margin-left: 8px; vertical-align: middle; }
+
+  /* Footer */
+  footer { padding: 32px 0 40px; border-top: 1px solid var(--border); margin-top: 24px; }
+  .footer-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; font-size: 12px; color: var(--muted); }
+  .footer-row a { color: var(--text); font-weight: 500; }
+  .footer-row a:hover { color: var(--accent); }
+  .footer-row .muted { color: var(--muted-2); }
+  .footer-links { display: flex; gap: 18px; }
+
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 30px; }
+    .sec h2 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ━━━ Top bar ━━━ -->
+  <header class="sky-bar">
+    <div class="sky-mark-block">
+      <span class="sky-mark">S</span>
+      <span class="sky-name"><span class="sky-name-dark">Sky</span> <span class="sky-name-accent">Sigma</span></span>
+      <span class="sky-sep">·</span>
+      <span class="sky-product">Sandman</span>
+    </div>
+    <div class="sky-bar-right">
+      <a href="https://fundfolio.sky-sigma.com">Fund Folio</a>
+      <a href="https://einvoice.sky-sigma.com">E-Invoice</a>
+      <a href="https://sky-sigma.com">Sky Sigma</a>
+    </div>
+  </header>
+
+  <!-- ━━━ Hero ━━━ -->
+  <section class="hero">
+    <div class="hero-pill">US EQUITIES · QUANT RESEARCH · PRIVATE BETA</div>
+    <h1>Quantitative equity research, <span class="hl">without the Bloomberg subscription.</span></h1>
+    <p class="hero-sub">Sandman is an end-to-end research dashboard for the S&amp;P 500 — <strong>8-pillar scoring engine</strong>, machine-learning ensemble, regime detection, Kelly-criterion position sizing, walk-forward backtests, and an adaptive learner that re-weights its own pillars from closed-trade outcomes. Built for individual investors who want institutional-grade tooling without paying institutional-grade fees.</p>
+    <a class="hero-cta" href="mailto:hello@sky-sigma.com?subject=Sandman%20beta%20access%20request">Request beta access</a>
+    <span class="hero-cta-sec">Currently invite-only · S&amp;P 500 · India fork in development</span>
+  </section>
+
+  <!-- ━━━ Stat bar ━━━ -->
+  <section class="stats">
+    <div class="stat">
+      <div class="lbl">Universe</div>
+      <div class="val">~500</div>
+      <div class="sub">S&amp;P 500 + sector ETFs</div>
+    </div>
+    <div class="stat">
+      <div class="lbl">Scoring pillars</div>
+      <div class="val">8</div>
+      <div class="sub">Fundamental + technical + ML</div>
+    </div>
+    <div class="stat">
+      <div class="lbl">Codebase</div>
+      <div class="val">~9,500</div>
+      <div class="sub">Lines of Python</div>
+    </div>
+    <div class="stat">
+      <div class="lbl">Backtest cutoffs</div>
+      <div class="val">4</div>
+      <div class="sub">Walk-forward, 3M + 6M windows</div>
+    </div>
+  </section>
+
+  <!-- ━━━ Pillars ━━━ -->
+  <section class="sec block">
+    <div class="sec-header">
+      <div class="sec-title">Scoring engine</div>
+      <div class="sec-sub">8 pillars · weighted composite · 0–100</div>
+    </div>
+    <h2>What goes into the score</h2>
+    <p class="sec-intro">Every stock is scored across eight independent pillars. Each pillar contributes to a final composite score (0–100). The <strong>AdaptiveLearner</strong> module re-weights the pillars over time based on which ones actually predicted closed-trade P&amp;L — so the engine learns from your real outcomes, not just from training data.</p>
+
+    <div class="pillars">
+      <div class="pillar">
+        <div class="pillar-num">PILLAR 01</div>
+        <h3>Quality &amp; fundamentals</h3>
+        <p>Piotroski F-Score (9-point), Altman Z-Score (5-factor), accrual ratio, ROE / ROIC trend, quality composite.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">PILLAR 02</div>
+        <h3>Valuation</h3>
+        <p>P/E, P/B, EV/EBITDA vs sector medians. PEG. Earnings yield vs 10-year. Sector-adjusted Z-scores.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">PILLAR 03</div>
+        <h3>Momentum &amp; trend</h3>
+        <p>12-1 momentum, RSI, MA crossovers, breakout detection, relative strength vs sector and SPY.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">PILLAR 04</div>
+        <h3>Risk &amp; volatility</h3>
+        <p>Beta, downside deviation, drawdown profile, idiosyncratic volatility, tail risk estimates.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">PILLAR 05</div>
+        <h3>Regime detection</h3>
+        <p>VIX-based classifier: CRISIS / HIGH_VOL / NORMAL / LOW_VOL. Position sizing and pillar weights adjust by regime.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">PILLAR 06</div>
+        <h3>ML ensemble</h3>
+        <p>XGBoost + LightGBM, TimeSeriesSplit CV, SHAP feature importance, walk-forward retraining.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">PILLAR 07</div>
+        <h3>Sentiment</h3>
+        <p>NLTK VADER tuned with a finance lexicon; optional FinBERT (1.7 GB HuggingFace model) for deeper sentiment.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">PILLAR 08</div>
+        <h3>Position sizing</h3>
+        <p>Kelly criterion with correlation adjustment, max-position caps, sector-concentration limits.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━━ Stack ━━━ -->
+  <section class="sec block">
+    <div class="sec-header">
+      <div class="sec-title">Technology</div>
+    </div>
+    <h2>Built on a serious stack</h2>
+    <p class="sec-intro">Sandman is a Python application — Dash for the dashboard, scikit-learn / XGBoost / LightGBM for the ML, yfinance + finvizfinance + FRED for data. Nothing exotic. Everything reproducible.</p>
+
+    <div class="stack">
+      <div class="stack-row">
+        <div class="stack-key">Frontend</div>
+        <div class="stack-val">
+          <span class="pill">Dash 4.x</span>
+          <span class="pill">Plotly</span>
+          <span class="pill">Sandman branded UI</span>
+        </div>
+      </div>
+      <div class="stack-row">
+        <div class="stack-key">Data layer</div>
+        <div class="stack-val">
+          <span class="pill">yfinance</span>
+          <span class="pill">finvizfinance</span>
+          <span class="pill">FRED API</span>
+          <span class="pill">caching + warm-start</span>
+        </div>
+      </div>
+      <div class="stack-row">
+        <div class="stack-key">ML</div>
+        <div class="stack-val">
+          <span class="pill">XGBoost</span>
+          <span class="pill">LightGBM</span>
+          <span class="pill">scikit-learn</span>
+          <span class="pill">SHAP</span>
+          <span class="pill">TimeSeriesSplit CV</span>
+        </div>
+      </div>
+      <div class="stack-row">
+        <div class="stack-key">NLP</div>
+        <div class="stack-val">
+          <span class="pill">NLTK VADER</span>
+          <span class="pill">finance lexicon</span>
+          <span class="pill">FinBERT (optional)</span>
+        </div>
+      </div>
+      <div class="stack-row">
+        <div class="stack-key">Risk &amp; sizing</div>
+        <div class="stack-val">
+          <span class="pill">Kelly criterion</span>
+          <span class="pill">correlation matrix</span>
+          <span class="pill">VaR &amp; ES</span>
+          <span class="pill">cluster detection</span>
+        </div>
+      </div>
+      <div class="stack-row">
+        <div class="stack-key">Validation</div>
+        <div class="stack-val">
+          <span class="pill">walk-forward backtests</span>
+          <span class="pill">4 historical cutoffs</span>
+          <span class="pill">3M + 6M forward windows</span>
+          <span class="pill">AdaptiveLearner</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━━ Caveats ━━━ -->
+  <section class="sec block">
+    <div class="sec-header">
+      <div class="sec-title">Honest about what it isn't</div>
+    </div>
+    <h2>Caveats we tell users upfront</h2>
+    <p class="sec-intro">A scoring model is a decision aid, not a crystal ball. Here is what Sandman doesn't claim to do.</p>
+
+    <div class="caveats">
+      <div class="caveat">
+        <h3>It's not a robo-advisor <span class="tag">BY DESIGN</span></h3>
+        <p>Sandman ranks and scores. It does not place trades, manage allocation across accounts, or rebalance automatically. Final decisions are yours.</p>
+      </div>
+      <div class="caveat">
+        <h3>It won't predict black swans <span class="tag">EVIDENT</span></h3>
+        <p>The ML ensemble is trained on historical regimes. Genuinely novel events (2020 March, war shocks, AI-coup style breaks) will hit Sandman's blind spots the same way they hit every other model.</p>
+      </div>
+      <div class="caveat">
+        <h3>It's only as good as the data <span class="tag">REAL</span></h3>
+        <p>yfinance has occasional gaps. Some financial statements lag. The regime detector is reactive, not predictive. We surface these honestly in the dashboard rather than hide them.</p>
+      </div>
+      <div class="caveat">
+        <h3>Sample size is small <span class="tag">FAIR</span></h3>
+        <p>Even a 20-year backtest gives you ~5,000 trading days. That sounds like a lot but covers only 2-3 full macro regimes. Treat the backtest as a sanity check, not a guarantee.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━━ Access band ━━━ -->
+  <section class="access">
+    <div>
+      <h2>Currently in private beta</h2>
+      <p>Sandman is invite-only while the AdaptiveLearner accumulates real-world trade outcomes from a small group of users. If you run a serious personal portfolio in US equities and want to help battle-test the system, email below.</p>
+    </div>
+    <a class="access-cta" href="mailto:hello@sky-sigma.com?subject=Sandman%20beta%20access%20request">Request access</a>
+  </section>
+
+  <!-- ━━━ Footer ━━━ -->
+  <footer>
+    <div class="footer-row">
+      <div class="muted">© Sky Sigma · 2026 · Sandman is a research tool, not financial advice.</div>
+      <div class="footer-links">
+        <a href="https://fundfolio.sky-sigma.com">Fund Folio</a>
+        <a href="https://einvoice.sky-sigma.com">E-Invoice</a>
+        <a href="https://sky-sigma.com">Sky Sigma</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>
